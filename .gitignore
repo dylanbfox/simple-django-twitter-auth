@@ -1,0 +1,3 @@
+*.pyc
+simple_django_twitter_auth.egg-info/
+dist/
