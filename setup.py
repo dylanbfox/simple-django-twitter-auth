@@ -33,5 +33,5 @@ setup(
         'Topic :: Internet :: WWW/HTTP',
         'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
     ],
-    install_requires=['twython', 'mock', 'model-mommy'],
+    install_requires=['twython'],
 )
