@@ -17,7 +17,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'h4w2k@z!uria4*-$l0h6gqqd*)-t7t+*u7m+yl@2z(kujvb-62'
+SECRET_KEY = os.environ['DJANGO_SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -36,6 +36,8 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_twitter_auth',
+    'pages',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -81,3 +83,15 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
 
 STATIC_URL = '/static/'
+
+TWITTER_APP_KEY = os.environ['TWITTER_APP_KEY']
+TWITTER_APP_SECRET = os.environ['TWITTER_APP_SECRET']
+
+# needed for formatting the callback url sent to Twitter
+HOST = "http://127.0.0.1:8000"
+
+# used to generate random password or not, default is True
+# TWITTER_AUTH_RANDOM_PASSWORD = True
+
+# used to redirect new users, optional
+TWITTER_NEW_USER_URL = "/welcome/"

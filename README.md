@@ -35,6 +35,7 @@
 
 - if user denies access at Twitter, they'll be redirect to page they came from (if available) OR home page
 
+- can test app by manually running `python manage.py test django_twitter_auth`
 
 ### Installation
 
@@ -60,7 +61,15 @@
 **GOOD:** https://3efed1b4.ngrok.com
 **BAD:**  https://3efed1b4.ngrok.com/
 
-6. That's it!
+6. Add the following line to your root urls.py
+
+	url(r'^twitter/', include('django_twitter_auth.urls', namespace='django_twitter_auth')), 
+
+7. Run migrate
+	
+	- need to install `TwitterProfile` model
+
+7. That's it!
 
 ### Optional settings
 
