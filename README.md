@@ -16,7 +16,7 @@
 	`TWITTER_APP_KEY = 'myappkey'`  
 	`TWITTER_APP_SECRET = 'myappsecret'`
 
-	*It's recommended you use environment variables instead of defining confidential credentials in your settings file*
+	*It's recommended you use [environment variables](http://andrewtorkbaker.com/using-environment-variables-with-django-settings) instead of defining confidential credentials in your settings file*
 
 5. Define `HOST` in `settings.py`
 
@@ -55,7 +55,7 @@
 
 ## Components
 
-#### TwitterProfile
+### TwitterProfile
 
 Simple Django Twitter Auth provides a `TwitterProfile` model. This model has the following attributes:
 
@@ -83,7 +83,7 @@ Reverse lookup is available through `user.twitterprofile`.
 
 ## Customization
 
-#### TWITTER_NEW_USER_URL
+### TWITTER_NEW_USER_URL
 
 Define a location for new users to be redirected to. Eg:
 
@@ -95,7 +95,7 @@ If this setting is defined, Simple Django Twitter Auth will append a `redir_to` 
 
 You can catch this parameter to redirect the user back to where they started after you're done any custom logic defined in your `TWITTER_NEW_USER_URL` view.
 
-#### TWITTER_AUTH_RANDOM_PASSWORD 
+### TWITTER_AUTH_RANDOM_PASSWORD 
 
 Default is `True`.
 
@@ -105,7 +105,18 @@ You can turn this off if you want, by setting `TWITTER_AUTH_RANDOM_PASSWORD` to 
 
 ## Running Tests
 
-Can manually run tests by calling `manage.py test django_twitter_auth` 
+You can manually run Simple Django Twitter Auth's tests by calling `python manage.py test django_twitter_auth` 
+
+You'll need to install the following packages in order for the tests to work:
+
+	`pip install model-mommy`
+	`pip install mock`
+
+## Compatability
+
+Simple Django Twitter Auth has only been tested with Python 2.7 and Django 1.7. 
+
+Further compatability tests will be posted shortly. If you install the app into your project using Django <= 1.7 and/or Python >= 3, and it works, please update the readme! 
 
 ## Coming Soon 
 
