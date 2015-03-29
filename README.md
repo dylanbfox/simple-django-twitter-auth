@@ -83,11 +83,11 @@ Reverse lookup is available through `user.twitterprofile`.
 
 ## Customization
 
-### TWITTER_NEW_USER_URL
+#### TWITTER_NEW_USER_URL
 
 Define a location for new users to be redirected to. Eg:
 
-	`TWITTER_NEW_USER_URL = "/welcome/"`
+	TWITTER_NEW_USER_URL = "/welcome/"
 
 Users are logged in by the time they arrive here.
 
@@ -95,7 +95,7 @@ If this setting is defined, Simple Django Twitter Auth will append a `redir_to` 
 
 You can catch this parameter to redirect the user back to where they started after you're done any custom logic defined in your `TWITTER_NEW_USER_URL` view.
 
-### TWITTER_AUTH_RANDOM_PASSWORD 
+#### TWITTER_AUTH_RANDOM_PASSWORD 
 
 Default is `True`.
 
@@ -109,14 +109,14 @@ You can manually run Simple Django Twitter Auth's tests by calling `python manag
 
 You'll need to install the following packages in order for the tests to work:
 
-	`pip install model-mommy`
-	`pip install mock`
+	pip install model-mommy
+	pip install mock
 
 ## Compatability
 
 Simple Django Twitter Auth has only been tested with Python 2.7 and Django 1.7. 
 
-Further compatability tests will be posted shortly. If you install the app into your project using Django <= 1.7 and/or Python >= 3, and it works, please update the readme! 
+Further compatability tests will be posted shortly. If you install the app into your project using Django < 1.7 and/or Python >= 3, and it works, please update the readme! 
 
 ## Coming Soon 
 
