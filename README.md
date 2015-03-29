@@ -83,6 +83,8 @@ Reverse lookup is available through `user.twitterprofile`.
 
 ## Customization
 
+You can use any of the following settings to customize Simple Django Twitter Auth. Just define them in your `settings.py` module.
+
 #### TWITTER_NEW_USER_URL
 
 Define a location for new users to be redirected to. Eg:
