@@ -1,4 +1,5 @@
 *.pyc
+build-notes.txt
 simple_django_twitter_auth.egg-info/
 dist/
 example/db.sqlite3
