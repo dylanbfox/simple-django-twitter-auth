@@ -91,7 +91,7 @@ Define a location for new users to be redirected to. Eg:
 
 Users are logged in by the time they arrive here.
 
-If this setting is defined, Simple Django Twitter Auth will append a `redir_to` URL parameter when forwarding. This will contain the URL the user started the login flow from. For example, `?redir_to=/welcome/`.
+If this setting is defined, Simple Django Twitter Auth will append a `redir_to` URL parameter when forwarding. This will contain the URL the user started the login flow from. For example, `?redir_to=https://3efed1b4.ngrok.com/random-page/`.
 
 You can catch this parameter to redirect the user back to where they started after you're done any custom logic defined in your `TWITTER_NEW_USER_URL` view.
 
