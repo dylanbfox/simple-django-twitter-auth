@@ -1,76 +1,115 @@
-### Notes
+# Simple Django Twitter Authentication
 
-- `settings.AUTH_USER_MODEL` is used to create OneToOne relationship with `TwitterProfile`
-	- User.username == TwitterProfile.username
-	- see below for password info 
+Simple Django Twitter Authentication is an explicit, simple way to add "Login with Twitter" functionality to your Django project. The goal is to keep control in your hands, to allow customization and implementation without having to dig through pages of documentation.
 
-- required settings:
-	- `TWITTER_APP_KEY = os.environ['TWITTER_APP_KEY']`
-	- `TWITTER_APP_SECRET = os.environ['TWITTER_APP_SECRET']`
-	- `HOST = "http://127.0.0.1:8000"`
-		- # HOST is needed for formatting the callback url sent to Twitter
-- Twitter username is set to User username
+## Installation
 
-- Users aren't re-created if they revoke access tokens and log back in. Their `TwitterProfile` is found via username attribute lookup, and their access tokens are simply updated to the new access tokens. 
-	- happens implicitly in the `TwitterProfile.save()` method
+1. `pip install simple-django-twitter-auth`
 
-- if allowing users to register/login using email, use:
-	- `TWITTER_AUTH_RANDOM_PASSWORD` to True
-		- this creates a random password for the `User` that's created and tied to
-		the `TwitterProfile` so that people can't login with a username (Twitter username) and blank password.
-			- base64 encoded 128 bit password using `os.urandom`
-	- this is strictly precautionary, so malicious people can't try to login to the site using a twitter username and a blank password
-	- **set to True by default! must set to False if you don't want this behavior** 
+2. Go to [https://apps.twitter.com](https://apps.twitter.com) and register an app if you haven't already
+	- Make sure the "Allow this application to be used to Sign in with Twitter" option is enabled in your "settings" page!
 
-- `TWITTER_NEW_USER_URL`, optional
-	- redirect new users to this URL, for eg, to capture an email address
-	- `redir_to` URL param passed along so you can redirect user back to
-	where they started if you want
-	- users are logged in by the time they arrive here
+3. Grab your `API key` and `API secret` from your Twitter app dashboard
 
-- can access profile in requests like so:
-	- `user.twitterprofile`
-	- `user.twitterprofile.OAUTH_TOKEN`
-	- `user.twitterprofile.OAUTH_TOKEN_SECRET`
+4. Define the following settings in `settings.py`
 
-- if user denies access at Twitter, they'll be redirect to page they came from (if available) OR home page
+	`TWITTER_APP_KEY = 'myappkey'`  
+	`TWITTER_APP_SECRET = 'myappsecret'`
 
-- can test app by manually running `python manage.py test django_twitter_auth`
+	*It's recommended you use environment variables instead of defining confidential credentials in your settings file*
 
-### Installation
+5. Define `HOST` in `settings.py`
 
-1. Go to https://apps.twitter.com
-2. To use the “Sign in with Twitter” flow, please go to your application settings and ensure that the “Allow this application to be used to Sign in with Twitter?” option is enabled.
-3. Grab your API key and API secret
-4. Define the following settings:
+	`HOST = 'https://3efed1b4.ngrok.com'`
 
-	TWITTER_APP_KEY = 'API Key'
-	TWITTER_APP_SETTINGS = 'API Secret'
+	**Don't include a trailing backslash**
 
-*It's recommended you use environment variables instead of defining confidential credentials in here"*
+	**GOOD:** `https://3efed1b4.ngrok.com`  
+	**BAD:**  `https://3efed1b4.ngrok.com/`
 
-	TWITTER_APP_KEY = os.environ['TWITTER_APP_KEY']
-	TWITTER_APP_SECRET = os.environ['TWITTER_APP_SECRET']
+6. Add 'django_twitter_auth' to your `INSTALLED_APPS` in `settings.py`.
 
-5. Define HOST settings
-	
-	HOST = 'https://3efed1b4.ngrok.com'
+7. Add the following line to the top of your root `urls.py`
 
-**Don't include a backslash**
+	`url(r'^twitter/', include('django_twitter_auth.urls', namespace='django_twitter_auth')),`
 
-**GOOD:** https://3efed1b4.ngrok.com
-**BAD:**  https://3efed1b4.ngrok.com/
+8. Run migrate to install the `TwitterProfile` model that comes with Simple Django Twitter Auth
 
-6. Add the following line to your root urls.py
+	`python manage.py migrate`
 
-	url(r'^twitter/', include('django_twitter_auth.urls', namespace='django_twitter_auth')), 
+9. That's it! You can now use the `{% url 'django_twitter_auth:login' %}` template tag to kick off the login flow.
 
-7. Run migrate
-	
-	- need to install `TwitterProfile` model
+## Login Flow
 
-7. That's it!
+1. Simple Django Twitter Auth provides the following URL `/twitter/login/`. First, you point users here.
+	- you can also utilize the `{% url 'django_twitter_auth:login' %}` template tag
 
-### Optional settings
+2. Users are redirected to Twitter where they authorize your application, granting it access to their Twitter profile.
 
-	TWITTER_NEW_USER_URL = "/welcome/"
+3. After authorizing your app, Twitter redirects users back to your site. Simple Django Twitter Auth then does one of the following:
+	- Creates a new `TwitterProfile` and `User`
+	- Finds an existing `TwitterProfile` and `User`
+	- Finds an existing `TwitterProfile` and `User`, and updates the `TwitterProfile`'s OAuth2 tokens. *(if a Twitter user revoked access to your app, and then re-authorizes it later, Simple Django Twitter Auth simply updates the access tokens.)*
+
+4. Simple Django Twitter Auth manually logs in the user, and redirects them back to the page they started the flow from.
+
+## Components
+
+#### TwitterProfile
+
+Simple Django Twitter Auth provides a `TwitterProfile` model. This model has the following attributes:
+
+**TwitterProfile.OAUTH_TOKEN**
+
+OAuth2 token provided by Twitter during authorization. Can be used to consume/publish additional data on behalf of Twitter User.
+
+**TwitterProfile.OAUTH_TOKEN_SECRET**
+
+OAuth2 token secret provided by Twitter during authorization. Can be used to consume/publish additional data on behalf of Twitter User.
+
+**TwitterProfile.username**
+
+User's Twitter username. '@' not included.
+
+**TwitterProfile.user**
+
+Whenever a new `TwitterProfile` is created, a `User` is also created and a OneToOne relationship is established with the `TwitterProfile`.
+
+The `username` attribute of the `User` is set to the same value as `TwitterProfile.username`.
+
+Simple Django Twitter Auth uses `django.contrib.auth.get_user_model()` to get the current `User` model.
+
+Reverse lookup is available through `user.twitterprofile`.
+
+## Customization
+
+#### TWITTER_NEW_USER_URL
+
+Define a location for new users to be redirected to. Eg:
+
+	`TWITTER_NEW_USER_URL = "/welcome/"`
+
+Users are logged in by the time they arrive here.
+
+If this setting is defined, Simple Django Twitter Auth will append a `redir_to` URL parameter when forwarding. This will contain the URL the user started the login flow from. For example, `?redir_to=/welcome/`.
+
+You can catch this parameter to redirect the user back to where they started after you're done any custom logic defined in your `TWITTER_NEW_USER_URL` view.
+
+#### TWITTER_AUTH_RANDOM_PASSWORD 
+
+Default is `True`.
+
+When Simple Django Twitter Auth creates a `User` and ties it to the `TwitterProfile`, a random base64 encoded 128-bit password using `os.urandom()` is created for the `User`. This is just a protective measure, so that the `User` isn't created with a blank password.
+
+You can turn this off if you want, by setting `TWITTER_AUTH_RANDOM_PASSWORD` to `False`.
+
+## Running Tests
+
+Can manually run tests by calling `manage.py test django_twitter_auth` 
+
+## Coming Soon 
+
+- Signals to provide additional customization
+- Pictures in the readme
+- Better example
+- More coming soon...
