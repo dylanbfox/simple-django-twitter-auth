@@ -1,0 +1,9 @@
+Django==1.7.7
+mock==1.0.1
+model-mommy==1.2.3
+oauthlib==0.7.2
+requests==2.6.0
+requests-oauthlib==0.4.2
+simple-django-twitter-auth==1.0
+six==1.9.0
+twython==3.2.0
