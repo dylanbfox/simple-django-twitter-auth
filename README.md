@@ -1,6 +1,6 @@
 # Simple Django Twitter Authentication
 
-Simple Django Twitter Authentication is an explicit, simple way to add "Login with Twitter" functionality to your Django project. The goal is to keep control in your hands, to allow customization and implementation without having to dig through pages of documentation.
+Simple Django Twitter Authentication is an explicit, simple way to add "Login with Twitter" functionality to your Django project. The goal is to keep control in your hands, and to allow customization and implementation without having to dig through pages of documentation.
 
 ## Installation
 
